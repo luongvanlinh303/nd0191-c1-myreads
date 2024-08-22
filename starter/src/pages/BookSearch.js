@@ -21,27 +21,22 @@ const BookSearch = ({ location }) => {
           setSearchResult([]);
           setSearchError(true);
         } else {
-          setSearchResult(resultBooks);
+          const updatedBooks = resultBooks.map((searchBook) => {
+            const bookFound = books.find((book) => book.id === searchBook.id);
+            if (bookFound) {
+              searchBook.shelf = bookFound.shelf;
+            } else {
+              searchBook.shelf = "none";
+            }
+            return searchBook;
+          });
+
+          setSearchResult(updatedBooks);
           setSearchError(false);
-          syncBookShelf();
         }
       });
     } else {
       setSearchResult([]);
-    }
-  };
-
-  const syncBookShelf = (books, searchResult) => {
-    if (books && searchResult) {
-      books.forEach((book) => {
-        searchResult.forEach((searchResultBook) => {
-          if (book.id === searchResultBook.id) {
-            searchResultBook.shelf = book.shelf;
-          }
-        });
-      });
-
-      setSearchResult(searchResult);
     }
   };
 
@@ -85,7 +80,7 @@ const BookSearch = ({ location }) => {
         )}
         {searchError && (
           <div>
-            <h3>No book found. Please try again !</h3>
+            <h3>No book found. Please try again!</h3>
           </div>
         )}
       </div>
